@@ -54,6 +54,7 @@ void parse(ParseTag<void>, redisReply &reply);
 std::string parse(ParseTag<std::string>, redisReply &reply);
 
 long long parse(ParseTag<long long>, redisReply &reply);
+int parse(ParseTag<int>, redisReply &reply);
 
 double parse(ParseTag<double>, redisReply &reply);
 
@@ -167,7 +168,7 @@ void to_flat_array(redisReply &reply, Output output) {
         using FirstType = typename std::decay<typename Pair::first_type>::type;
         using SecondType = typename std::decay<typename Pair::second_type>::type;
         *output = std::make_pair(parse<FirstType>(*key_reply),
-                                    parse<SecondType>(*val_reply));
+                                 parse<SecondType>(*val_reply));
 
         ++output;
     }
@@ -201,11 +202,11 @@ std::tuple<T> parse_tuple(redisReply **reply, std::size_t idx) {
 
 template <typename T, typename ...Args>
 auto parse_tuple(redisReply **reply, std::size_t idx) ->
-    typename std::enable_if<sizeof...(Args) != 0, std::tuple<T, Args...>>::type {
+typename std::enable_if < sizeof...(Args) != 0, std::tuple<T, Args... >>::type {
     assert(reply != nullptr);
 
     return std::tuple_cat(parse_tuple<T>(reply, idx),
-                            parse_tuple<Args...>(reply, idx + 1));
+    parse_tuple<Args...>(reply, idx + 1));
 }
 
 }
@@ -240,7 +241,7 @@ std::pair<T, U> parse(ParseTag<std::pair<T, U>>, redisReply &reply) {
     }
 
     return std::make_pair(parse<typename std::decay<T>::type>(*first),
-                            parse<typename std::decay<U>::type>(*second));
+                          parse<typename std::decay<U>::type>(*second));
 }
 
 template <typename ...Args>

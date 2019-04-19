@@ -58,6 +58,10 @@ long long parse(ParseTag<long long>, redisReply &reply) {
     return reply.integer;
 }
 
+int parse(ParseTag<int>, redisReply &reply) {
+    return std::stoi(parse<std::string>(reply));
+}
+
 double parse(ParseTag<double>, redisReply &reply) {
     return std::stod(parse<std::string>(reply));
 }
